@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+
+  admin-panel-api:
+    build:
+      context: ./AdminPanel
+      dockerfile: Dockerfile
+    env_file: .env
+    volumes:
+      - ./AdminPanel:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: dotnet watch run
+
+  admin-panel-front:
+    build:
+      context: ./admin-panel-front
+      dockerfile: Dockerfile
+    volumes:
+      - ./admin-panel-front:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev
+
+volumes:
+  postgres_data:
