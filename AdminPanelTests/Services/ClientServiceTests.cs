@@ -73,10 +73,10 @@ public class ClientServiceTests : IDisposable
     public async Task UpdateClientAsync_UpdatesExistingClient()
     {
         // Arrange
-        var updatedClient = new Client { Name = "Updated", Email = "updated@test.com", Balance = 500 };
+        var updatedClient = new Client { Id = 1, Name = "Updated", Email = "updated@test.com", Balance = 500 };
 
         // Act
-        var result = await _service.UpdateClientAsync(1, updatedClient);
+        var result = await _service.UpdateClientAsync(updatedClient.Id, updatedClient);
 
         // Assert
         Assert.NotNull(result);
@@ -119,7 +119,7 @@ public class ClientServiceTests : IDisposable
     {
         // Arrange
         var client = await _context.Clients.Include(c => c.Tags).FirstAsync();
-        client.Tags.Add(TestSeedData.Tags()[0]);
+        client.Tags!.Add(TestSeedData.Tags()[0]);
         await _context.SaveChangesAsync();
         _context.ChangeTracker.Clear();
 
@@ -139,6 +139,7 @@ public class ClientServiceTests : IDisposable
         // Assert
         Assert.True(result);
         var client = await _context.Clients.Include(c => c.Tags).FirstAsync();
+        Assert.NotNull(client.Tags);
         Assert.Contains(client.Tags, t => t.Id == 1);
     }
 
@@ -155,7 +156,7 @@ public class ClientServiceTests : IDisposable
     {
         // Arrange
         var client = await _context.Clients.Include(c => c.Tags).FirstAsync();
-        client.Tags.Add(TestSeedData.Tags()[0]);
+        client.Tags!.Add(TestSeedData.Tags()[0]);
         await _context.SaveChangesAsync();
 
         // Act

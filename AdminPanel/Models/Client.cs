@@ -7,5 +7,5 @@ public class Client
     public string Email { get; set; } = string.Empty;
     public decimal Balance { get; set; }
 
-    public List<Tag> Tags { get; set; } = [];
+    public List<Tag>? Tags { get; set; }
 }

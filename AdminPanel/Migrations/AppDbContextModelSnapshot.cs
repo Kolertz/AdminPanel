@@ -4,6 +4,7 @@ using AdminPanel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -15,24 +16,30 @@ namespace AdminPanel.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("AdminPanel.Models.Client", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Balance")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -43,20 +50,22 @@ namespace AdminPanel.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("numeric");
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -69,10 +78,12 @@ namespace AdminPanel.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -83,17 +94,19 @@ namespace AdminPanel.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Expires")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -106,13 +119,22 @@ namespace AdminPanel.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
+
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Tags");
                 });
@@ -121,34 +143,21 @@ namespace AdminPanel.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ClientTag", b =>
-                {
-                    b.Property<int>("ClientsId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TagsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ClientsId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("ClientTag");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.Payment", b =>
@@ -173,19 +182,16 @@ namespace AdminPanel.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ClientTag", b =>
+            modelBuilder.Entity("AdminPanel.Models.Tag", b =>
                 {
                     b.HasOne("AdminPanel.Models.Client", null)
-                        .WithMany()
-                        .HasForeignKey("ClientsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Tags")
+                        .HasForeignKey("ClientId");
+                });
 
-                    b.HasOne("AdminPanel.Models.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("AdminPanel.Models.Client", b =>
+                {
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

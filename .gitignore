@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/AdminPanel/app.db-wal
+/AdminPanel/app.db-shm
+/AdminPanel/app.db

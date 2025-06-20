@@ -1,4 +1,4 @@
-using AdminPanel;
+п»їusing AdminPanel;
 using AdminPanel.Constants;
 using AdminPanel.Interfaces;
 using AdminPanel.Models;
@@ -13,9 +13,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=app.db"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
 
-// Регистрация сервисов с интерфейсами
+// Р РµРіРёСЃС‚СЂР°С†РёСЏ СЃРµСЂРІРёСЃРѕРІ СЃ РёРЅС‚РµСЂС„РµР№СЃР°РјРё
 builder.Services.AddOptions<JwtSettings>()
     .Bind(builder.Configuration.GetSection("JwtSettings"))
     .ValidateDataAnnotations()
@@ -92,7 +92,7 @@ app.UseCors(CorsPolicies.AllowAll);
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Инициализация бд
+// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р±Рґ
 using (var scope = app.Services.CreateScope())
 {
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
@@ -100,28 +100,18 @@ using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var env = app.Services.GetRequiredService<IWebHostEnvironment>();
-
-        if (env.IsProduction())
-        {
-            logger.LogInformation("Устанавливаем миграции...");
-            db.Database.Migrate();
-        }
-        else
-        {
-            logger.LogInformation("Пересоздаём тестовую базу данных...");
-            db.Database.EnsureDeleted();
-            db.Database.EnsureCreated();
-            SeedData.Initialize(db);
-        }
+        logger.LogInformation("РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РјРёРіСЂР°С†РёРё...");
+        db.Database.Migrate();
+        SeedData.Initialize(db);
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Произошла ошибка во время инициализации бд");
+        logger.LogError(ex, "РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РІРѕ РІСЂРµРјСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё Р±Рґ");
         throw;
     }
 }
 
-// Аутентификация
+// РђСѓС‚РµРЅС‚РёС„РёРєР°С†РёСЏ
 app.MapPost("/auth/login", async ([FromBody] LoginRequestBody model, IAuthService authService) =>
 {
     var result = await authService.LoginAsync(model);
@@ -134,7 +124,7 @@ app.MapPost("/auth/refresh", async ([FromBody] RefreshTokenRequestBody model, IA
     return result != null ? Results.Ok(result) : Results.Unauthorized();
 });
 
-// CRUD клиентов
+// CRUD РєР»РёРµРЅС‚РѕРІ
 app.MapGet("/clients", async (IClientService clientService) =>
 {
     return await clientService.GetAllClientsAsync();
@@ -164,14 +154,14 @@ app.MapDelete("/clients/{id}", async (int id, IClientService clientService) =>
     return success ? Results.NoContent() : Results.NotFound();
 }).RequireAuthorization();
 
-// Платежи
+// РџР»Р°С‚РµР¶Рё
 app.MapGet("/payments", async (int take, IPaymentService paymentService) =>
 {
     var payments = await paymentService.GetRecentPaymentsAsync(take);
     return Results.Ok(payments);
 }).RequireAuthorization();
 
-// Курс
+// РљСѓСЂСЃ
 app.MapGet("/rate", async (IRateService rateService) =>
 {
     var rate = await rateService.GetCurrentRateAsync();
@@ -184,7 +174,7 @@ app.MapPost("/rate", async ([FromBody] Rate newRate, IRateService rateService) =
     return Results.Ok(rate);
 }).RequireAuthorization();
 
-// CRUD меток
+// CRUD РјРµС‚РѕРє
 app.MapGet("/tags", async (ITagService tagService) =>
 {
     var tags = await tagService.GetAllTagsAsync();
@@ -203,7 +193,7 @@ app.MapDelete("/tags/{id}", async (int id, ITagService tagService) =>
     return success ? Results.NoContent() : Results.NotFound();
 }).RequireAuthorization();
 
-// Метки клиента
+// РњРµС‚РєРё РєР»РёРµРЅС‚Р°
 app.MapGet("/clients/{id}/tags", async (int id, IClientService clientService) =>
 {
     var tags = await clientService.GetClientTagsAsync(id);
@@ -212,8 +202,8 @@ app.MapGet("/clients/{id}/tags", async (int id, IClientService clientService) =>
 
 app.MapPost("/clients/{id}/tags", async (int id, [FromBody] int tagId, IClientService clientService) =>
 {
-    var client = await clientService.AddTagToClientAsync(id, tagId);
-    return client == null ? Results.NotFound() : Results.Ok(client);
+    var success = await clientService.AddTagToClientAsync(id, tagId);
+    return success ? Results.Ok(success) : Results.NotFound();
 }).RequireAuthorization();
 
 app.MapDelete("/clients/{id}/tags/{tagId}", async (int id, int tagId, IClientService clientService) =>

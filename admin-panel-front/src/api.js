@@ -121,3 +121,81 @@ export const updateRate = async (value) => {
     });
     return response.json();
 };
+
+// Tag functions
+export const getTags = async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/tags`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+    return response.json();
+};
+
+export const createTag = async (tag) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/tags`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(tag),
+    });
+    return response.json();
+};
+
+export const deleteTag = async (id) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/tags/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (response.status === 204) {
+        return;
+    }
+    return response.json();
+};
+
+// Client Tag functions
+export const getClientTags = async (clientId) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/clients/${clientId}/tags`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+    return response.json();
+};
+
+export const addTagToClient = async (clientId, tagId) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/clients/${clientId}/tags`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(tagId),
+    });
+    return response.json();
+};
+
+export const removeTagFromClient = async (clientId, tagId) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/clients/${clientId}/tags/${tagId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (response.status === 204) {
+        return;
+    }
+    return response.json();
+};

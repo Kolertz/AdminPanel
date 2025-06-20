@@ -62,7 +62,7 @@ public class ClientService(AppDbContext db) : IClientService
         if (client == null || tag == null)
             return false;
 
-        client.Tags.Add(tag);
+        client.Tags!.Add(tag);
         await _db.SaveChangesAsync();
         return true;
     }
@@ -70,11 +70,11 @@ public class ClientService(AppDbContext db) : IClientService
     public async Task<bool> RemoveTagFromClientAsync(int clientId, int tagId)
     {
         var client = await _db.Clients.Include(c => c.Tags).FirstOrDefaultAsync(c => c.Id == clientId);
-        var tag = client?.Tags.FirstOrDefault(t => t.Id == tagId);
+        var tag = client?.Tags?.FirstOrDefault(t => t.Id == tagId);
         if (tag == null)
             return false;
 
-        client!.Tags.Remove(tag);
+        client!.Tags!.Remove(tag);
         await _db.SaveChangesAsync();
         return true;
     }

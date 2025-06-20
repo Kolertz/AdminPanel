@@ -53,11 +53,11 @@ public static class SeedData
             var clients = db.Clients.ToList();
 
             db.Payments.AddRange(
-                new() { Client = clients[0], Amount = 10, Date = DateTime.Now.AddDays(-5), Description = "Payment 1" },
-                new() { Client = clients[1], Amount = 20, Date = DateTime.Now.AddDays(-4), Description = "Payment 2" },
-                new() { Client = clients[2], Amount = 30, Date = DateTime.Now.AddDays(-3), Description = "Payment 3" },
-                new() { Client = clients[0], Amount = 40, Date = DateTime.Now.AddDays(-2), Description = "Payment 4" },
-                new() { Client = clients[1], Amount = 50, Date = DateTime.Now.AddDays(-1), Description = "Payment 5" }
+                new() { Client = clients[0], Amount = 10, Date = DateTime.UtcNow.AddDays(-5), Description = "Payment 1" },
+                new() { Client = clients[1], Amount = 20, Date = DateTime.UtcNow.AddDays(-4), Description = "Payment 2" },
+                new() { Client = clients[2], Amount = 30, Date = DateTime.UtcNow.AddDays(-3), Description = "Payment 3" },
+                new() { Client = clients[0], Amount = 40, Date = DateTime.UtcNow.AddDays(-2), Description = "Payment 4" },
+                new() { Client = clients[1], Amount = 50, Date = DateTime.UtcNow.AddDays(-1), Description = "Payment 5" }
             );
 
             db.SaveChanges();

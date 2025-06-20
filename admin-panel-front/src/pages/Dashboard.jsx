@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ClientTable from '../components/ClientTable';
 import RateDisplay from '../components/RateDisplay';
 import PaymentHistory from '../components/PaymentHistory';
+import TagManager from '../components/TagManager';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
+                    <TagManager />
                     <ClientTable />
                     <PaymentHistory />
                 </div>

@@ -11,6 +11,7 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "admin-panel-front", "admin-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{EA26FC13-7E5A-423F-A6DF-6BAA340A0AE5}"
 	ProjectSection(SolutionItems) = preProject
+		.env = .env
 		docker-compose.yml = docker-compose.yml
 		README.md = README.md
 	EndProjectSection
