@@ -21,18 +21,18 @@ public class ClientService(AppDbContext db) : IClientService
         return client;
     }
 
-    public async Task<bool> UpdateClientAsync(int id, Client inputClient)
+    public async Task<Client?> UpdateClientAsync(int id, Client inputClient)
     {
         var client = await _db.Clients.FindAsync(id);
         if (client == null)
-            return false;
+            return null;
 
         client.Name = inputClient.Name;
         client.Email = inputClient.Email;
         client.Balance = inputClient.Balance;
 
         await _db.SaveChangesAsync();
-        return true;
+        return client;
     }
 
     public async Task<bool> DeleteClientAsync(int id)

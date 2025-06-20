@@ -78,6 +78,12 @@ export const deleteClient = async (id) => {
             'Authorization': `Bearer ${token}`,
         },
     });
+
+    // Handle empty response (204 No Content)
+    if (response.status === 204) {
+        return;
+    }
+
     return response.json();
 };
 

@@ -95,9 +95,30 @@ app.UseAuthorization();
 // Инициализация бд
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-    SeedData.Initialize(db);
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var env = app.Services.GetRequiredService<IWebHostEnvironment>();
+
+        if (env.IsProduction())
+        {
+            logger.LogInformation("Устанавливаем миграции...");
+            db.Database.Migrate();
+        }
+        else
+        {
+            logger.LogInformation("Пересоздаём тестовую базу данных...");
+            db.Database.EnsureDeleted();
+            db.Database.EnsureCreated();
+            SeedData.Initialize(db);
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Произошла ошибка во время инициализации бд");
+        throw;
+    }
 }
 
 // Аутентификация
@@ -133,8 +154,8 @@ app.MapPost("/clients", async ([FromBody] Client client, IClientService clientSe
 
 app.MapPut("/clients/{id}", async (int id, [FromBody] Client inputClient, IClientService clientService) =>
 {
-    var success = await clientService.UpdateClientAsync(id, inputClient);
-    return success ? Results.NoContent() : Results.NotFound();
+    var updatedClient = await clientService.UpdateClientAsync(id, inputClient);
+    return updatedClient == null ? Results.NotFound() : Results.Ok(updatedClient);
 }).RequireAuthorization();
 
 app.MapDelete("/clients/{id}", async (int id, IClientService clientService) =>
@@ -191,8 +212,8 @@ app.MapGet("/clients/{id}/tags", async (int id, IClientService clientService) =>
 
 app.MapPost("/clients/{id}/tags", async (int id, [FromBody] int tagId, IClientService clientService) =>
 {
-    var success = await clientService.AddTagToClientAsync(id, tagId);
-    return success ? Results.Ok() : Results.NotFound();
+    var client = await clientService.AddTagToClientAsync(id, tagId);
+    return client == null ? Results.NotFound() : Results.Ok(client);
 }).RequireAuthorization();
 
 app.MapDelete("/clients/{id}/tags/{tagId}", async (int id, int tagId, IClientService clientService) =>
