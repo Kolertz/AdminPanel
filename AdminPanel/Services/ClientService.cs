@@ -37,11 +37,17 @@ public class ClientService(AppDbContext db) : IClientService
 
     public async Task<bool> DeleteClientAsync(int id)
     {
-        var client = await _db.Clients.FindAsync(id);
+        var client = await _db.Clients
+        .Include(c => c.Tags)
+        .FirstOrDefaultAsync(c => c.Id == id);
+
         if (client == null)
             return false;
 
+        client.Tags.Clear();
+
         _db.Clients.Remove(client);
+
         await _db.SaveChangesAsync();
         return true;
     }

@@ -3,6 +3,7 @@ using System;
 using AdminPanel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminPanel.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620125220_PaymentsRestrictDeletion")]
+    partial class PaymentsRestrictDeletion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,7 +166,7 @@ namespace AdminPanel.Migrations
             modelBuilder.Entity("AdminPanel.Models.Payment", b =>
                 {
                     b.HasOne("AdminPanel.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("Payments")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -191,6 +194,8 @@ namespace AdminPanel.Migrations
 
             modelBuilder.Entity("AdminPanel.Models.Client", b =>
                 {
+                    b.Navigation("Payments");
+
                     b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618

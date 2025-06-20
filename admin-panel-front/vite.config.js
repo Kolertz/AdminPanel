@@ -12,6 +12,7 @@ const baseConfig = {
         }
     },
     server: {
+        host: '0.0.0.0',
         proxy: {
             '^/weatherforecast': {
                 target: env.ASPNETCORE_HTTPS_PORT

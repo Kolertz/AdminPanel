@@ -16,5 +16,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         modelBuilder.Entity<Tag>()
             .HasAlternateKey(u => u.Name);
+
+        modelBuilder.Entity<Payment>()
+            .HasOne(p => p.Client)
+            .WithMany()
+            .HasForeignKey(p => p.ClientId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

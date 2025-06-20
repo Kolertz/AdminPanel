@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getClients, deleteClient, getClientTags, addTagToClient, removeTagFromClient, getTags } from '../api';
+import ClientForm from './ClientForm';
 
 export default function ClientTable() {
     const [clients, setClients] = useState([]);
@@ -7,6 +8,7 @@ export default function ClientTable() {
     const [selectedClient, setSelectedClient] = useState(null);
     const [clientTags, setClientTags] = useState([]);
     const [newTagId, setNewTagId] = useState('');
+    const [showCreateForm, setShowCreateForm] = useState(false);
 
     useEffect(() => {
         fetchClients();
@@ -51,9 +53,32 @@ export default function ClientTable() {
         await fetchClientTags(selectedClient.id);
     };
 
+    const handleCreateSuccess = () => {
+        setShowCreateForm(false);
+        fetchClients();
+    };
+
     return (
         <div className="bg-white p-4 rounded-lg shadow mb-6">
-            <h2 className="text-xl font-semibold mb-4">Clients</h2>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Clients</h2>
+                <button
+                    onClick={() => setShowCreateForm(true)}
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                    Create Client
+                </button>
+            </div>
+
+            {showCreateForm && (
+                <div className="mb-6">
+                    <ClientForm
+                        onSuccess={handleCreateSuccess}
+                        onCancel={() => setShowCreateForm(false)}
+                    />
+                </div>
+            )}
+
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white">
                     <thead>

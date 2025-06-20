@@ -8,7 +8,7 @@ export default function PaymentHistory() {
     useEffect(() => {
         const fetchPayments = async () => {
             try {
-                const data = await getPayments(10);
+                const data = await getPayments(5);
                 setPayments(data);
                 setLoading(false);
             } catch (error) {

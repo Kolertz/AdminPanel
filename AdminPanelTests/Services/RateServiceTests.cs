@@ -82,7 +82,7 @@ public class RateServiceTests : IDisposable
         // Assert
         var dbRate = await _context.Rates.FirstAsync();
         Assert.Equal(updatedRate.Value, dbRate.Value);
-        Assert.Equal(TestSeedData.DefaultRate.Id, dbRate.Id); // Проверяем что ID сохранился
+        Assert.Equal(TestSeedData.DefaultRate.Id, dbRate.Id);
         Assert.Equal(updatedRate.Value, result.Value);
     }
 

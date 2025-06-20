@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,11 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IRateService, RateService>();
 builder.Services.AddScoped<ITagService, TagService>();
 
-// Add JWT authentication
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -53,7 +58,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add Swagger
+// Сваггер (можно вынести в отдельный класс)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -212,4 +217,4 @@ app.MapDelete("/clients/{id}/tags/{tagId}", async (int id, int tagId, IClientSer
     return success ? Results.NoContent() : Results.NotFound();
 }).RequireAuthorization();
 
-app.Run();
+app.Run("http://0.0.0.0:5000");
