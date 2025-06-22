@@ -13,6 +13,15 @@ export default function ClientTable({ tags, onTagChange }) {
         fetchClients();
     }, []);
 
+    useEffect(() => {
+        if (selectedClient) {
+            const updatedClientTags = clientTags.filter(tag =>
+                tags.some(t => t.id === tag.id)
+            );
+            setClientTags(updatedClientTags);
+        }
+    }, [tags]);
+
     const fetchClients = async () => {
         try {
             const data = await getClients();
