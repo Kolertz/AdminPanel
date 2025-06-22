@@ -17,9 +17,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Tag>()
             .HasAlternateKey(u => u.Name);
 
+        // Нужно для того, чтобы история платежей не менялась при удалении клиентов
         modelBuilder.Entity<Payment>()
             .HasOne(p => p.Client)
-            .WithMany()
+            .WithMany(c => c.Payments)
             .HasForeignKey(p => p.ClientId)
             .OnDelete(DeleteBehavior.SetNull);
     }

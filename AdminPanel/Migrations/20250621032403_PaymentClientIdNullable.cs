@@ -2,35 +2,34 @@
 
 #nullable disable
 
-namespace AdminPanel.Migrations
+namespace AdminPanel.Migrations;
+
+/// <inheritdoc />
+public partial class PaymentClientIdNullable : Migration
 {
     /// <inheritdoc />
-    public partial class PaymentClientIdNullable : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<int>(
-                name: "ClientId",
-                table: "Payments",
-                type: "integer",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "integer");
-        }
+        migrationBuilder.AlterColumn<int>(
+            name: "ClientId",
+            table: "Payments",
+            type: "integer",
+            nullable: true,
+            oldClrType: typeof(int),
+            oldType: "integer");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<int>(
-                name: "ClientId",
-                table: "Payments",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(int),
-                oldType: "integer",
-                oldNullable: true);
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AlterColumn<int>(
+            name: "ClientId",
+            table: "Payments",
+            type: "integer",
+            nullable: false,
+            defaultValue: 0,
+            oldClrType: typeof(int),
+            oldType: "integer",
+            oldNullable: true);
     }
 }

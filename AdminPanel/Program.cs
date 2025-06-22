@@ -2,6 +2,7 @@
 using AdminPanel.Constants;
 using AdminPanel.Interfaces;
 using AdminPanel.Models;
+using AdminPanel.Models.Dtos;
 using AdminPanel.Models.Entities;
 using AdminPanel.Models.Requests;
 using AdminPanel.Services;
@@ -143,13 +144,13 @@ app.MapGet("/clients/{id}", async (int id, IClientService clientService) =>
     return client != null ? Results.Ok(client) : Results.NotFound();
 }).RequireAuthorization();
 
-app.MapPost("/clients", async ([FromBody] Client client, IClientService clientService) =>
+app.MapPost("/clients", async ([FromBody] ClientDto client, IClientService clientService) =>
 {
     var createdClient = await clientService.CreateClientAsync(client);
     return Results.Created($"/clients/{createdClient.Id}", createdClient);
 }).RequireAuthorization();
 
-app.MapPut("/clients/{id}", async (int id, [FromBody] Client inputClient, IClientService clientService) =>
+app.MapPut("/clients/{id}", async (int id, [FromBody] ClientDto inputClient, IClientService clientService) =>
 {
     var updatedClient = await clientService.UpdateClientAsync(id, inputClient);
     return updatedClient == null ? Results.NotFound() : Results.Ok(updatedClient);
@@ -175,7 +176,7 @@ app.MapGet("/rate", async (IRateService rateService) =>
     return rate != null ? Results.Ok(rate) : Results.NotFound();
 }).RequireAuthorization();
 
-app.MapPost("/rate", async ([FromBody] Rate newRate, IRateService rateService) =>
+app.MapPost("/rate", async ([FromBody] RateDto newRate, IRateService rateService) =>
 {
     var rate = await rateService.UpdateRateAsync(newRate);
     return Results.Ok(rate);
@@ -188,7 +189,7 @@ app.MapGet("/tags", async (ITagService tagService) =>
     return Results.Ok(tags);
 }).RequireAuthorization();
 
-app.MapPost("/tags", async ([FromBody] Tag tag, ITagService tagService) =>
+app.MapPost("/tags", async ([FromBody] TagDto tag, ITagService tagService) =>
 {
     var createdTag = await tagService.CreateTagAsync(tag);
     return Results.Created($"/tags/{createdTag.Id}", createdTag);

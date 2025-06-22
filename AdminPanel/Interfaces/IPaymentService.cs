@@ -1,8 +1,9 @@
-﻿using AdminPanel.Models.Entities;
+﻿using AdminPanel.Models.Dtos;
+using AdminPanel.Models.Entities;
 
 namespace AdminPanel.Interfaces;
 
 public interface IPaymentService
 {
-    Task<List<Payment>> GetRecentPaymentsAsync(int take);
+    Task<List<PaymentDto>> GetRecentPaymentsAsync(int take);
 }

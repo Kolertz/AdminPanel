@@ -11,20 +11,25 @@ public class ClientService(AppDbContext db) : IClientService
 {
     private readonly AppDbContext _db = db;
 
-    public async Task<List<Client>> GetAllClientsAsync() =>
-        await _db.Clients.AsNoTracking().ToListAsync();
+    public async Task<List<ClientDto>> GetAllClientsAsync() =>
+        (await _db.Clients.AsNoTracking().ToListAsync())
+        .Adapt<List<ClientDto>>();
 
-    public async Task<Client?> GetClientByIdAsync(int id) =>
-        await _db.Clients.FindAsync(id);
+    public async Task<ClientDto?> GetClientByIdAsync(int id) =>
+        (await _db.Clients.FindAsync(id))
+        .Adapt<ClientDto>();
 
-    public async Task<Client> CreateClientAsync(Client client)
+    public async Task<ClientDto> CreateClientAsync(ClientDto client)
     {
-        _db.Clients.Add(client);
+        var newClient = client.Adapt<Client>();
+
+        _db.Clients.Add(newClient);
+
         await _db.SaveChangesAsync();
-        return client;
+        return newClient.Adapt<ClientDto>();
     }
 
-    public async Task<Client?> UpdateClientAsync(int id, Client inputClient)
+    public async Task<ClientDto?> UpdateClientAsync(int id, ClientDto inputClient)
     {
         var client = await _db.Clients.FindAsync(id);
         if (client == null)
@@ -35,7 +40,7 @@ public class ClientService(AppDbContext db) : IClientService
         client.Balance = inputClient.Balance;
 
         await _db.SaveChangesAsync();
-        return client;
+        return client.Adapt<ClientDto>();
     }
 
     public async Task<bool> DeleteClientAsync(int id)

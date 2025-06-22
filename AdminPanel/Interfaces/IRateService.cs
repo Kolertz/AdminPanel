@@ -1,9 +1,10 @@
-﻿using AdminPanel.Models.Entities;
+﻿using AdminPanel.Models.Dtos;
+using AdminPanel.Models.Entities;
 
 namespace AdminPanel.Interfaces;
 
 public interface IRateService
 {
-    Task<Rate?> GetCurrentRateAsync();
-    Task<Rate> UpdateRateAsync(Rate newRate);
+    Task<RateDto?> GetCurrentRateAsync();
+    Task<RateDto> UpdateRateAsync(RateDto newRate);
 }

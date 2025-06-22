@@ -1,4 +1,5 @@
 ﻿using AdminPanel.Models;
+using AdminPanel.Models.Dtos;
 using AdminPanel.Models.Entities;
 using AdminPanel.Services;
 using AdminPanel.Tests.TestData;
@@ -11,6 +12,7 @@ public class RateServiceTests : IDisposable
 {
     private readonly AppDbContext _context;
     private readonly RateService _service;
+    private readonly Rate _initialRate;
 
     public RateServiceTests()
     {
@@ -20,6 +22,7 @@ public class RateServiceTests : IDisposable
 
         _context = new AppDbContext(options);
         _service = new RateService(_context);
+        _initialRate = new() { Id = 1, Value = 100.0m };
 
         SeedTestData();
     }
@@ -51,15 +54,19 @@ public class RateServiceTests : IDisposable
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(TestSeedData.DefaultRate.Value, result.Value);
+
+        Assert.Multiple(() =>
+        {
+            Assert.Equal(_initialRate.Value, result.Value);
+            Assert.Equal(_initialRate.Id, result.Id);
+        });
     }
 
     [Fact]
     public async Task UpdateRateAsync_CreatesNewRate_WhenNoRatesExist()
     {
         // Arrange
-        var newRate = new Rate { Value = 150.5m };
-
+        var newRate = new RateDto { Value = 150.5m };
         await ClearRatesAsync();
 
         // Act
@@ -67,40 +74,59 @@ public class RateServiceTests : IDisposable
 
         // Assert
         var dbRate = await _context.Rates.FirstAsync();
-        Assert.Equal(newRate.Value, dbRate.Value);
-        Assert.Equal(newRate.Value, result.Value);
+
+        Assert.Multiple(() =>
+        {
+            Assert.Equal(newRate.Value, dbRate.Value);
+            Assert.Equal(newRate.Value, result.Value);
+            Assert.NotEqual(default, dbRate.Id);
+        });
     }
 
     [Fact]
     public async Task UpdateRateAsync_UpdatesExistingRate_WhenRateExists()
     {
         // Arrange
-        var updatedRate = new Rate { Value = 200.0m };
+        var updatedRate = new RateDto { Value = 200.0m };
+        var originalRate = await _context.Rates.FirstAsync();
 
         // Act
         var result = await _service.UpdateRateAsync(updatedRate);
 
         // Assert
         var dbRate = await _context.Rates.FirstAsync();
-        Assert.Equal(updatedRate.Value, dbRate.Value);
-        Assert.Equal(TestSeedData.DefaultRate.Id, dbRate.Id);
-        Assert.Equal(updatedRate.Value, result.Value);
+
+        Assert.Multiple(() =>
+        {
+            Assert.Equal(updatedRate.Value, dbRate.Value);
+            Assert.Equal(updatedRate.Value, result.Value);
+            Assert.Equal(_initialRate.Id, dbRate.Id);
+        });
     }
 
     [Fact]
     public async Task UpdateRateAsync_ReturnsCorrectRate_AfterUpdate()
     {
+        // Arrange
+        var updatedRateValue = 250.0m;
+
         // Act
-        var updatedRate = await _service.UpdateRateAsync(new Rate { Value = 250.0m });
+        var updatedRate = await _service.UpdateRateAsync(new RateDto { Value = updatedRateValue });
 
         // Assert
         var currentRate = await _service.GetCurrentRateAsync();
-        Assert.Equal(updatedRate.Value, currentRate?.Value);
+
+        Assert.Multiple(() =>
+        {
+            Assert.NotNull(currentRate);
+            Assert.Equal(updatedRateValue, currentRate?.Value);
+            Assert.Equal(_initialRate.Id, currentRate?.Id);
+        });
     }
 
     private void SeedTestData()
     {
-        _context.Rates.Add(TestSeedData.DefaultRate);
+        _context.Rates.Add(_initialRate);
         _context.SaveChanges();
         _context.ChangeTracker.Clear();
     }

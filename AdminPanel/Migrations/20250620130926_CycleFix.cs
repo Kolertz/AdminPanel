@@ -2,21 +2,20 @@
 
 #nullable disable
 
-namespace AdminPanel.Migrations
+namespace AdminPanel.Migrations;
+
+/// <inheritdoc />
+public partial class CycleFix : Migration
 {
     /// <inheritdoc />
-    public partial class CycleFix : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
 
-        }
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
 
-        }
     }
 }

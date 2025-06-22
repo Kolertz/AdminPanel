@@ -1,5 +1,7 @@
 ﻿using AdminPanel.Interfaces;
+using AdminPanel.Models.Dtos;
 using AdminPanel.Models.Entities;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Services;
@@ -8,14 +10,18 @@ public class TagService(AppDbContext db) : ITagService
 {
     private readonly AppDbContext _db = db;
 
-    public async Task<List<Tag>> GetAllTagsAsync() =>
-        await _db.Tags.AsNoTracking().ToListAsync();
+    public async Task<List<TagDto>> GetAllTagsAsync() =>
+        (await _db.Tags.AsNoTracking().ToListAsync())
+        .Adapt<List<TagDto>>();
 
-    public async Task<Tag> CreateTagAsync(Tag tag)
+    public async Task<TagDto> CreateTagAsync(TagDto tag)
     {
-        _db.Tags.Add(tag);
+        var newTag = tag.Adapt<Tag>();
+
+        _db.Tags.Add(newTag);
+
         await _db.SaveChangesAsync();
-        return tag;
+        return newTag.Adapt<TagDto>();
     }
 
     public async Task<bool> DeleteTagAsync(int id)
