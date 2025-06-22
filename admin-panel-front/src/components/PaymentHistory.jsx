@@ -25,11 +25,11 @@ export default function PaymentHistory() {
         <div className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Payment History</h2>
             <div className="overflow-x-auto">
-                <table className="min-w-full bg-white">
+                <table className="min-w-full bg-white text-center">
                     <thead>
                         <tr>
                             <th className="py-2 px-4 border-b">Date</th>
-                            <th className="py-2 px-4 border-b">Client</th>
+                            <th className="py-2 px-4 border-b">Client ID</th>
                             <th className="py-2 px-4 border-b">Amount</th>
                             <th className="py-2 px-4 border-b">Description</th>
                         </tr>
@@ -40,7 +40,7 @@ export default function PaymentHistory() {
                                 <td className="py-2 px-4 border-b">
                                     {new Date(payment.date).toLocaleDateString()}
                                 </td>
-                                <td className="py-2 px-4 border-b">{payment.clientName}</td>
+                                <td className="py-2 px-4 border-b">{payment.clientId}</td>
                                 <td className="py-2 px-4 border-b">{payment.amount}</td>
                                 <td className="py-2 px-4 border-b">{payment.description}</td>
                             </tr>

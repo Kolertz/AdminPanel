@@ -399,3 +399,7 @@ FodyWeavers.xsd
 /AdminPanel/app.db-wal
 /AdminPanel/app.db-shm
 /AdminPanel/app.db
+*.db
+*.db-shm
+*.db-wal
+*.db

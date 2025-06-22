@@ -118,11 +118,12 @@ using (var scope = app.Services.CreateScope())
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         if (isPostgres)
         {
-            logger.LogInformation("Устанавливаем миграции...");
+            logger.LogInformation("Устанавливаем миграции... (Postgres)");
             db.Database.Migrate();
         }
         else
         {
+            logger.LogInformation("Пересоздаём бд... (Sqlite)");
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
         }
@@ -237,4 +238,4 @@ app.MapDelete("/clients/{id}/tags/{tagId}", async (int id, int tagId, IClientSer
     return success ? Results.NoContent() : Results.NotFound();
 }).RequireAuthorization();
 
-app.Run();
+app.Run("http://0.0.0.0:5000");
