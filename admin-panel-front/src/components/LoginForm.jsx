@@ -1,23 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../api';
+import { login } from '../api/auth';
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { token } = await login(email, password);
-      localStorage.setItem('token', token);
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Invalid credentials');
-    }
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const { token, refreshToken } = await login(email, password);
+            localStorage.setItem('token', token);
+            localStorage.setItem('refreshToken', refreshToken);
+            navigate('/dashboard');
+        } catch (err) {
+            setError('Invalid credentials');
+        }
+    };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">

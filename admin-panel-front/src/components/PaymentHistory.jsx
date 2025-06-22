@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getPayments } from '../api';
+import { getPayments } from '../api/api';
 
 export default function PaymentHistory() {
     const [payments, setPayments] = useState([]);

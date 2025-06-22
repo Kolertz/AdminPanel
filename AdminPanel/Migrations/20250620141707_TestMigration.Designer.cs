@@ -3,6 +3,7 @@ using System;
 using AdminPanel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminPanel.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620141707_TestMigration")]
+    partial class TestMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace AdminPanel.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AdminPanel.Models.Entities.Client", b =>
+            modelBuilder.Entity("AdminPanel.Models.Client", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,7 +49,7 @@ namespace AdminPanel.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.Entities.Payment", b =>
+            modelBuilder.Entity("AdminPanel.Models.Payment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +60,7 @@ namespace AdminPanel.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("ClientId")
+                    b.Property<int>("ClientId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
@@ -74,7 +77,7 @@ namespace AdminPanel.Migrations
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.Entities.Rate", b =>
+            modelBuilder.Entity("AdminPanel.Models.Rate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,7 +93,7 @@ namespace AdminPanel.Migrations
                     b.ToTable("Rates");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.Entities.RefreshToken", b =>
+            modelBuilder.Entity("AdminPanel.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,7 +118,7 @@ namespace AdminPanel.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.Entities.Tag", b =>
+            modelBuilder.Entity("AdminPanel.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,7 +137,7 @@ namespace AdminPanel.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.Entities.User", b =>
+            modelBuilder.Entity("AdminPanel.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -170,19 +173,20 @@ namespace AdminPanel.Migrations
                     b.ToTable("ClientTag");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.Entities.Payment", b =>
+            modelBuilder.Entity("AdminPanel.Models.Payment", b =>
                 {
-                    b.HasOne("AdminPanel.Models.Entities.Client", "Client")
+                    b.HasOne("AdminPanel.Models.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.Entities.RefreshToken", b =>
+            modelBuilder.Entity("AdminPanel.Models.RefreshToken", b =>
                 {
-                    b.HasOne("AdminPanel.Models.Entities.User", "User")
+                    b.HasOne("AdminPanel.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -193,13 +197,13 @@ namespace AdminPanel.Migrations
 
             modelBuilder.Entity("ClientTag", b =>
                 {
-                    b.HasOne("AdminPanel.Models.Entities.Client", null)
+                    b.HasOne("AdminPanel.Models.Client", null)
                         .WithMany()
                         .HasForeignKey("ClientsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AdminPanel.Models.Entities.Tag", null)
+                    b.HasOne("AdminPanel.Models.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)

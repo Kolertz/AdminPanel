@@ -1,5 +1,8 @@
 ﻿using AdminPanel.Interfaces;
-using AdminPanel.Models;
+using AdminPanel.Models.Dtos;
+using AdminPanel.Models.Entities;
+using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Services;
@@ -44,7 +47,7 @@ public class ClientService(AppDbContext db) : IClientService
         if (client == null)
             return false;
 
-        client.Tags.Clear();
+        client.Tags?.Clear();
 
         _db.Clients.Remove(client);
 
@@ -52,13 +55,15 @@ public class ClientService(AppDbContext db) : IClientService
         return true;
     }
 
-    public async Task<List<Tag>> GetClientTagsAsync(int id)
+    public async Task<List<TagDto>> GetClientTagsAsync(int id)
     {
         var client = await _db.Clients
             .AsNoTracking()
             .Include(c => c.Tags)
             .FirstOrDefaultAsync(c => c.Id == id);
-        return client?.Tags ?? [];
+
+        var clientTags = client?.Tags?.Select(t => new TagDto { Id = t.Id, Name = t.Name }).ToList();
+        return clientTags.Adapt<List<TagDto>>();
     }
 
     public async Task<bool> AddTagToClientAsync(int clientId, int tagId)

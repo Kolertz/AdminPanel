@@ -1,4 +1,4 @@
-﻿using AdminPanel.Models;
+﻿using AdminPanel.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel;
@@ -21,6 +21,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasOne(p => p.Client)
             .WithMany()
             .HasForeignKey(p => p.ClientId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

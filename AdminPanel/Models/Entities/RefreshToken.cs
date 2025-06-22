@@ -1,4 +1,4 @@
-﻿namespace AdminPanel.Models;
+﻿namespace AdminPanel.Models.Entities;
 
 public class RefreshToken
 {

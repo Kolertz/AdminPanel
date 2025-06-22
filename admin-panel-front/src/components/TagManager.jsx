@@ -1,29 +1,27 @@
-import { useState, useEffect } from 'react';
-import { getTags, createTag, deleteTag } from '../api';
+import { useState } from 'react';
+import { createTag, deleteTag } from '../api/api';
 
-export default function TagManager() {
-    const [tags, setTags] = useState([]);
+export default function TagManager({ tags, onTagChange }) {
     const [newTagName, setNewTagName] = useState('');
-
-    useEffect(() => {
-        fetchTags();
-    }, []);
-
-    const fetchTags = async () => {
-        const data = await getTags();
-        setTags(data);
-    };
 
     const handleCreateTag = async () => {
         if (!newTagName.trim()) return;
-        await createTag({ name: newTagName });
-        setNewTagName('');
-        fetchTags();
+        try {
+            await createTag({ name: newTagName });
+            setNewTagName('');
+            onTagChange();
+        } catch (error) {
+            console.error('Error creating tag:', error);
+        }
     };
 
     const handleDeleteTag = async (id) => {
-        await deleteTag(id);
-        fetchTags();
+        try {
+            await deleteTag(id);
+            onTagChange();
+        } catch (error) {
+            console.error('Error deleting tag:', error);
+        }
     };
 
     return (

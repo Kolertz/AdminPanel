@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { getClients, deleteClient, getClientTags, addTagToClient, removeTagFromClient, getTags } from '../api';
+import { getClients, deleteClient, getClientTags, addTagToClient, removeTagFromClient } from '../api/api';
 import ClientForm from './ClientForm';
 
-export default function ClientTable() {
+export default function ClientTable({ tags, onTagChange }) {
     const [clients, setClients] = useState([]);
-    const [tags, setTags] = useState([]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [clientTags, setClientTags] = useState([]);
     const [newTagId, setNewTagId] = useState('');
@@ -12,27 +11,33 @@ export default function ClientTable() {
 
     useEffect(() => {
         fetchClients();
-        fetchTags();
     }, []);
 
     const fetchClients = async () => {
-        const data = await getClients();
-        setClients(data);
-    };
-
-    const fetchTags = async () => {
-        const data = await getTags();
-        setTags(data);
+        try {
+            const data = await getClients();
+            setClients(data);
+        } catch (error) {
+            console.error('Error fetching clients:', error);
+        }
     };
 
     const fetchClientTags = async (clientId) => {
-        const data = await getClientTags(clientId);
-        setClientTags(data);
+        try {
+            const data = await getClientTags(clientId);
+            setClientTags(data);
+        } catch (error) {
+            console.error('Error fetching client tags:', error);
+        }
     };
 
     const handleDelete = async (id) => {
-        await deleteClient(id);
-        fetchClients();
+        try {
+            await deleteClient(id);
+            fetchClients();
+        } catch (error) {
+            console.error('Error deleting client:', error);
+        }
     };
 
     const handleShowTags = async (client) => {
@@ -42,15 +47,24 @@ export default function ClientTable() {
 
     const handleAddTag = async () => {
         if (!newTagId || !selectedClient) return;
-        await addTagToClient(selectedClient.id, parseInt(newTagId));
-        await fetchClientTags(selectedClient.id);
-        setNewTagId('');
+        try {
+            await addTagToClient(selectedClient.id, parseInt(newTagId));
+            await fetchClientTags(selectedClient.id);
+            setNewTagId('');
+            onTagChange(); // Обновляем список всех тегов
+        } catch (error) {
+            console.error('Error adding tag to client:', error);
+        }
     };
 
     const handleRemoveTag = async (tagId) => {
         if (!selectedClient) return;
-        await removeTagFromClient(selectedClient.id, tagId);
-        await fetchClientTags(selectedClient.id);
+        try {
+            await removeTagFromClient(selectedClient.id, tagId);
+            await fetchClientTags(selectedClient.id);
+        } catch (error) {
+            console.error('Error removing tag from client:', error);
+        }
     };
 
     const handleCreateSuccess = () => {

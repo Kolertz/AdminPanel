@@ -1,5 +1,8 @@
 ﻿using AdminPanel.Interfaces;
 using AdminPanel.Models;
+using AdminPanel.Models.Dtos;
+using AdminPanel.Models.Entities;
+using AdminPanel.Models.Requests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

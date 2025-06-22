@@ -1,4 +1,5 @@
 ﻿using AdminPanel.Models;
+using AdminPanel.Models.Entities;
 using AdminPanel.Services;
 using AdminPanel.Tests.TestData;
 using Microsoft.EntityFrameworkCore;

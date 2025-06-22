@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createClient, updateClient } from '../api';
+import { createClient, updateClient } from '../api/api';
 
 export default function ClientForm({ client, onSuccess, onCancel }) {
     const [formData, setFormData] = useState({

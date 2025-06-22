@@ -1,4 +1,5 @@
-﻿using AdminPanel.Models;
+﻿using AdminPanel.Models.Dtos;
+using AdminPanel.Models.Requests;
 
 namespace AdminPanel.Interfaces;
 

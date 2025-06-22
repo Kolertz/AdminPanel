@@ -1,4 +1,6 @@
-﻿namespace AdminPanel.Models;
+﻿using AdminPanel.Models.Dtos;
+
+namespace AdminPanel.Models.Entities;
 
 public class Tag
 {

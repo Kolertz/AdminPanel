@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getRate, updateRate } from '../api';
+import { getRate, updateRate } from '../api/api';
 
 export default function RateDisplay() {
   const [rate, setRate] = useState(0);

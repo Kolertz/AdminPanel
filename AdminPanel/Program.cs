@@ -2,6 +2,8 @@
 using AdminPanel.Constants;
 using AdminPanel.Interfaces;
 using AdminPanel.Models;
+using AdminPanel.Models.Entities;
+using AdminPanel.Models.Requests;
 using AdminPanel.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -117,15 +119,15 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Аутентификация
-app.MapPost("/auth/login", async ([FromBody] LoginRequestBody model, IAuthService authService) =>
+app.MapPost("/auth/login", async ([FromBody] LoginRequestBody body, IAuthService authService) =>
 {
-    var result = await authService.LoginAsync(model);
+    var result = await authService.LoginAsync(body);
     return result != null ? Results.Ok(result) : Results.Unauthorized();
 });
 
-app.MapPost("/auth/refresh", async ([FromBody] RefreshTokenRequestBody model, IAuthService authService) =>
+app.MapPost("/auth/refresh", async ([FromBody] RefreshTokenRequestBody body, IAuthService authService) =>
 {
-    var result = await authService.RefreshTokenAsync(model.RefreshToken);
+    var result = await authService.RefreshTokenAsync(body.RefreshToken);
     return result != null ? Results.Ok(result) : Results.Unauthorized();
 });
 
@@ -205,9 +207,9 @@ app.MapGet("/clients/{id}/tags", async (int id, IClientService clientService) =>
     return Results.Ok(tags);
 }).RequireAuthorization();
 
-app.MapPost("/clients/{id}/tags", async (int id, [FromBody] int tagId, IClientService clientService) =>
+app.MapPost("/clients/{id}/tags", async (int id, [FromBody] CreateClientTagRequestBody body, IClientService clientService) =>
 {
-    var success = await clientService.AddTagToClientAsync(id, tagId);
+    var success = await clientService.AddTagToClientAsync(id, body.TagId);
     return success ? Results.Ok(success) : Results.NotFound();
 }).RequireAuthorization();
 

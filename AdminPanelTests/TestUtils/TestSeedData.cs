@@ -1,4 +1,4 @@
-﻿using AdminPanel.Models;
+﻿using AdminPanel.Models.Entities;
 using System.Collections.Generic;
 
 namespace AdminPanel.Tests.TestData;
