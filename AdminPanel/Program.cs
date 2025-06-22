@@ -15,8 +15,18 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+var isPostgres = Environment.GetEnvironmentVariable("POSTGRES_DB") != null;
+
+if (isPostgres)
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")));
+}
 
 // Регистрация сервисов с интерфейсами
 builder.Services.AddOptions<JwtSettings>()
@@ -106,9 +116,17 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var env = app.Services.GetRequiredService<IWebHostEnvironment>();
-        logger.LogInformation("Устанавливаем миграции...");
-        db.Database.Migrate();
+        if (isPostgres)
+        {
+            logger.LogInformation("Устанавливаем миграции...");
+            db.Database.Migrate();
+        }
+        else
+        {
+            db.Database.EnsureDeleted();
+            db.Database.EnsureCreated();
+        }
+
         SeedData.Initialize(db);
     }
     catch (Exception ex)
@@ -219,4 +237,4 @@ app.MapDelete("/clients/{id}/tags/{tagId}", async (int id, int tagId, IClientSer
     return success ? Results.NoContent() : Results.NotFound();
 }).RequireAuthorization();
 
-app.Run("http://0.0.0.0:5000");
+app.Run();
