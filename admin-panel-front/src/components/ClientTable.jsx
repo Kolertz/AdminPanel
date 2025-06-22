@@ -51,7 +51,7 @@ export default function ClientTable({ tags, onTagChange }) {
             await addTagToClient(selectedClient.id, parseInt(newTagId));
             await fetchClientTags(selectedClient.id);
             setNewTagId('');
-            onTagChange(); // Обновляем список всех тегов
+            onTagChange();
         } catch (error) {
             console.error('Error adding tag to client:', error);
         }
@@ -62,6 +62,7 @@ export default function ClientTable({ tags, onTagChange }) {
         try {
             await removeTagFromClient(selectedClient.id, tagId);
             await fetchClientTags(selectedClient.id);
+            onTagChange();
         } catch (error) {
             console.error('Error removing tag from client:', error);
         }

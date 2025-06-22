@@ -207,9 +207,9 @@ app.MapGet("/clients/{id}/tags", async (int id, IClientService clientService) =>
     return Results.Ok(tags);
 }).RequireAuthorization();
 
-app.MapPost("/clients/{id}/tags", async (int id, [FromBody] CreateClientTagRequestBody body, IClientService clientService) =>
+app.MapPost("/clients/{id}/tags/{tagId}", async (int id, int tagId, IClientService clientService) =>
 {
-    var success = await clientService.AddTagToClientAsync(id, body.TagId);
+    var success = await clientService.AddTagToClientAsync(id, tagId);
     return success ? Results.Ok(success) : Results.NotFound();
 }).RequireAuthorization();
 

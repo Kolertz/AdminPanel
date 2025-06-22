@@ -29,6 +29,6 @@ export const deleteTag = (id) => api.delete(`/tags/${id}`).then(res => res.data)
 // Client Tag functions
 export const getClientTags = (clientId) => api.get(`/clients/${clientId}/tags`).then(res => res.data);
 
-export const addTagToClient = (clientId, tagId) => api.post(`/clients/${clientId}/tags`, tagId).then(res => res.data);
+export const addTagToClient = (clientId, tagId) => api.post(`/clients/${clientId}/tags/${tagId}`).then(res => res.data);
 
 export const removeTagFromClient = (clientId, tagId) => api.delete(`/clients/${clientId}/tags/${tagId}`).then(res => res.data);
