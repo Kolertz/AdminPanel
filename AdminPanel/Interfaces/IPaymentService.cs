@@ -1,5 +1,4 @@
 ﻿using AdminPanel.Models.Dtos;
-using AdminPanel.Models.Entities;
 
 namespace AdminPanel.Interfaces;
 

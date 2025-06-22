@@ -1,6 +1,4 @@
-﻿using AdminPanel.Models.Entities;
-
-namespace AdminPanel.Models.Dtos;
+﻿namespace AdminPanel.Models.Dtos;
 
 public class PaymentDto
 {

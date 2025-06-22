@@ -1,6 +1,5 @@
 ﻿using AdminPanel.Interfaces;
 using AdminPanel.Models.Dtos;
-using AdminPanel.Models.Entities;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 

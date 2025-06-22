@@ -1,9 +1,7 @@
-﻿using AdminPanel.Models;
-using AdminPanel.Models.Dtos;
+﻿using AdminPanel.Models.Dtos;
 using AdminPanel.Models.Entities;
 using AdminPanel.Services;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace AdminPanel.Tests.Services;
 
@@ -84,7 +82,7 @@ public class TagServiceTests : IDisposable
         Assert.Multiple(
             () => Assert.True(result),
             async () => Assert.Equal(initialCount - 1, await _context.Tags.CountAsync()),
-            async() => Assert.Null(await _context.Tags.FindAsync(tagIdToDelete))
+            async () => Assert.Null(await _context.Tags.FindAsync(tagIdToDelete))
         );
     }
 

@@ -2,7 +2,6 @@
 using AdminPanel.Models.Dtos;
 using AdminPanel.Models.Entities;
 using Mapster;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Services;

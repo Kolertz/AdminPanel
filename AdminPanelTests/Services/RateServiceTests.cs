@@ -1,10 +1,7 @@
-﻿using AdminPanel.Models;
-using AdminPanel.Models.Dtos;
+﻿using AdminPanel.Models.Dtos;
 using AdminPanel.Models.Entities;
 using AdminPanel.Services;
-using AdminPanel.Tests.TestData;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace AdminPanel.Tests.Services;
 

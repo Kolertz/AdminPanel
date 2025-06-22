@@ -1,6 +1,4 @@
-﻿using AdminPanel.Models;
-using AdminPanel.Models.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using AdminPanel.Models.Entities;
 
 namespace AdminPanel;
 
