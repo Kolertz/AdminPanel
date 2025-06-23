@@ -40,7 +40,7 @@ export default function PaymentHistory() {
                                 <td className="py-2 px-4 border-b">
                                     {new Date(payment.date).toLocaleDateString()}
                                 </td>
-                                <td className="py-2 px-4 border-b">{payment.clientId}</td>
+                                <td className="py-2 px-4 border-b text-center">{payment.clientId}</td>
                                 <td className="py-2 px-4 border-b">{payment.amount}</td>
                                 <td className="py-2 px-4 border-b">{payment.description}</td>
                             </tr>
